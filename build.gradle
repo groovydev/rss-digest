@@ -1,0 +1,77 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+
+    maven {
+        url "https://repository.apache.org/content/repositories/releases/"
+    }
+    maven {
+        url "http://repo.fusesource.com/nexus/content/repositories/public"
+    }
+
+    // grails
+    maven {
+        url "http://repo.grails.org/grails/libs-releases-local"
+    }
+
+    // grails plugins
+    maven {
+        url "http://repo.grails.org/grails/plugins"
+    }
+}
+
+dependencies {
+
+    def camelVersion = '2.13.0'
+    compile "org.apache.camel:camel-core:${camelVersion}"
+    compile "org.apache.camel:camel-spring:${camelVersion}"
+    compile "org.apache.camel:camel-script:${camelVersion}"
+    compile "org.apache.camel:camel-groovy:${camelVersion}"
+    compile "org.apache.camel:camel-rss:${camelVersion}"
+    compile "org.apache.camel:camel-mail:${camelVersion}"
+    compile "org.apache.camel:camel-quartz2:${camelVersion}"
+    compile "org.apache.camel:camel-mustache:${camelVersion}"
+
+    compile "org.apache.commons:commons-lang3:3.1"
+
+    def groovyVersion = "2.2.2"
+    def springFrameworkVersion = "3.2.4.RELEASE"
+    def grailsVersion = '2.3.4'
+
+    compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
+
+    compile "org.grails:grails-spring:$grailsVersion"
+
+    compile "org.springframework:spring-context:${springFrameworkVersion}",
+            "org.springframework:spring-core:${springFrameworkVersion}",
+            "org.springframework:spring-context-support:${springFrameworkVersion}",
+            "org.springframework:spring-orm:${springFrameworkVersion}",
+            "org.springframework:spring-aop:${springFrameworkVersion}",
+            "org.springframework:spring-core:${springFrameworkVersion}"
+
+    // logger
+    compile 'org.slf4j:slf4j-api:1.7.+'
+    compile 'ch.qos.logback:logback-classic:1.+'
+
+}
+
+task projectSetup(description : 'make all dirs for project setup') << {
+    def sources = [sourceSets.main, sourceSets.test]
+    sources*.allSource*.srcDirs.flatten().each { File srcDir ->
+        println "making $srcDir"
+        srcDir.mkdirs()
+    }
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+mainClassName = "com.groovydev.Daemon"
